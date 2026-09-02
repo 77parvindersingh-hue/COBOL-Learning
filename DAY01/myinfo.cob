@@ -1,0 +1,12 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. MYINFO.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+         01 NAME PIC X(20).
+         01 AGE PIC 99.
+         PROCEDURE DIVISION.
+           MOVE "PARVINDER" TO NAME.
+           MOVE 19 TO AGE.
+           DISPLAY "NAME: " NAME.
+           DISPLAY "AGE: " AGE.
+           STOP RUN.
