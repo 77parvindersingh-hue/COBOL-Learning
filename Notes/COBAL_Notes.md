@@ -868,3 +868,513 @@ END-IF.
 ```
 
 **Day 03 complete ✅**
+# 🟦 COBOL — DAY 04
+
+## Multiple Conditions & `EVALUATE`
+
+### 1. Multiple `IF` statements
+
+When there are multiple possible conditions, we can use nested `IF` statements.
+
+```cobol
+IF MARKS >= 90
+    DISPLAY "GRADE A"
+ELSE
+    IF MARKS >= 80
+        DISPLAY "GRADE B"
+    ELSE
+        IF MARKS >= 70
+            DISPLAY "GRADE C"
+        ELSE
+            DISPLAY "GRADE D OR BELOW"
+        END-IF
+    END-IF
+END-IF.
+```
+
+Nested `IF` works, but with many conditions it can become harder to read.
+
+---
+
+## 2. `EVALUATE`
+
+`EVALUATE` is COBOL's construct for selecting between multiple possible cases.
+
+It can be thought of as similar to:
+
+* `switch` in C/Java
+* `match` in Python
+
+There are two important forms:
+
+```text
+EVALUATE variable
+```
+
+and
+
+```text
+EVALUATE TRUE
+```
+
+---
+
+# 3. `EVALUATE TRUE`
+
+`EVALUATE TRUE` is useful when the `WHEN` clauses contain conditions.
+
+Example:
+
+```cobol
+EVALUATE TRUE
+
+    WHEN MARKS >= 90
+        DISPLAY "GRADE A"
+
+    WHEN MARKS >= 80
+        DISPLAY "GRADE B"
+
+    WHEN MARKS >= 70
+        DISPLAY "GRADE C"
+
+    WHEN MARKS >= 60
+        DISPLAY "GRADE D"
+
+    WHEN OTHER
+        DISPLAY "FAIL"
+
+END-EVALUATE.
+```
+
+If:
+
+```cobol
+MOVE 85 TO MARKS.
+```
+
+the conditions are checked until the first matching `WHEN` is found.
+
+Output:
+
+```text
+GRADE B
+```
+
+### Basic structure
+
+```cobol
+EVALUATE TRUE
+
+    WHEN condition-1
+        statements
+
+    WHEN condition-2
+        statements
+
+    WHEN condition-3
+        statements
+
+    WHEN OTHER
+        statements
+
+END-EVALUATE.
+```
+
+---
+
+# 4. `WHEN OTHER`
+
+```cobol
+WHEN OTHER
+```
+
+means:
+
+> None of the previous `WHEN` conditions matched.
+
+Example:
+
+```cobol
+EVALUATE TRUE
+
+    WHEN MARKS >= 90
+        DISPLAY "A"
+
+    WHEN MARKS >= 80
+        DISPLAY "B"
+
+    WHEN MARKS >= 70
+        DISPLAY "C"
+
+    WHEN OTHER
+        DISPLAY "BELOW C"
+
+END-EVALUATE.
+```
+
+If:
+
+```text
+MARKS = 50
+```
+
+then:
+
+```text
+MARKS >= 90  → FALSE
+MARKS >= 80  → FALSE
+MARKS >= 70  → FALSE
+WHEN OTHER   → TRUE
+```
+
+Output:
+
+```text
+BELOW C
+```
+
+---
+
+# 5. ⚠️ Order of conditions matters
+
+Consider:
+
+```cobol
+EVALUATE TRUE
+
+    WHEN MARKS >= 70
+        DISPLAY "GRADE C"
+
+    WHEN MARKS >= 90
+        DISPLAY "GRADE A"
+
+END-EVALUATE.
+```
+
+If:
+
+```text
+MARKS = 95
+```
+
+then `MARKS >= 70` is already true.
+
+Therefore, the first matching `WHEN` is selected.
+
+It is important to arrange overlapping conditions carefully.
+
+For grades, use:
+
+```cobol
+WHEN MARKS >= 90
+    DISPLAY "GRADE A"
+
+WHEN MARKS >= 80
+    DISPLAY "GRADE B"
+
+WHEN MARKS >= 70
+    DISPLAY "GRADE C"
+
+WHEN MARKS >= 60
+    DISPLAY "GRADE D"
+
+WHEN OTHER
+    DISPLAY "FAIL"
+```
+
+---
+
+# 6. `EVALUATE` with a value
+
+The second important form is:
+
+```cobol
+EVALUATE VARIABLE
+```
+
+Here, COBOL compares the value of the variable with the values specified in `WHEN`.
+
+Example:
+
+```cobol
+01 CHOICE PIC 9.
+```
+
+Then:
+
+```cobol
+EVALUATE CHOICE
+
+    WHEN 1
+        DISPLAY "ADDITION"
+
+    WHEN 2
+        DISPLAY "SUBTRACTION"
+
+    WHEN 3
+        DISPLAY "MULTIPLICATION"
+
+    WHEN 4
+        DISPLAY "DIVISION"
+
+    WHEN OTHER
+        DISPLAY "INVALID CHOICE"
+
+END-EVALUATE.
+```
+
+If:
+
+```cobol
+MOVE 3 TO CHOICE.
+```
+
+the output is:
+
+```text
+MULTIPLICATION
+```
+
+### Think of it as:
+
+```text
+CHOICE = 1 → ADDITION
+CHOICE = 2 → SUBTRACTION
+CHOICE = 3 → MULTIPLICATION
+CHOICE = 4 → DIVISION
+anything else → INVALID CHOICE
+```
+
+---
+
+# 🧠 7. Difference between the two forms
+
+### `EVALUATE VARIABLE`
+
+```cobol
+EVALUATE CHOICE
+
+    WHEN 1
+        DISPLAY "ADD"
+
+    WHEN 2
+        DISPLAY "SUBTRACT"
+
+    WHEN OTHER
+        DISPLAY "INVALID"
+
+END-EVALUATE.
+```
+
+Think:
+
+> **"What is the value of CHOICE?"**
+
+Best suited to multiple specific values/options.
+
+---
+
+### `EVALUATE TRUE`
+
+```cobol
+EVALUATE TRUE
+
+    WHEN MARKS >= 90
+        DISPLAY "A"
+
+    WHEN MARKS >= 80
+        DISPLAY "B"
+
+    WHEN OTHER
+        DISPLAY "FAIL"
+
+END-EVALUATE.
+```
+
+Think:
+
+> **"Which condition is true?"**
+
+Useful when the `WHEN` clauses contain conditions or ranges.
+
+---
+
+# 🐍 8. Python connection
+
+Because I already know Python, the concepts can be mapped like this:
+
+### Python
+
+```python
+if marks >= 90:
+    print("A")
+elif marks >= 80:
+    print("B")
+else:
+    print("FAIL")
+```
+
+### COBOL
+
+```cobol
+IF MARKS >= 90
+    DISPLAY "A"
+ELSE IF MARKS >= 80
+    DISPLAY "B"
+ELSE
+    DISPLAY "FAIL"
+END-IF.
+```
+
+For multiple choices, COBOL's:
+
+```cobol
+EVALUATE CHOICE
+```
+
+is conceptually similar to using a `match`/switch-style structure.
+
+**Important:** `EVALUATE` is not something you need to use everywhere. `IF / ELSE IF / ELSE` is still perfectly appropriate when it makes the logic clearer.
+
+---
+
+# 9. `END-EVALUATE`
+
+Just as:
+
+```cobol
+END-IF
+```
+
+closes an `IF` structure,
+
+```cobol
+END-EVALUATE
+```
+
+closes an `EVALUATE` structure.
+
+Example:
+
+```cobol
+EVALUATE TRUE
+    WHEN MARKS >= 90
+        DISPLAY "A"
+    WHEN OTHER
+        DISPLAY "FAIL"
+END-EVALUATE.
+```
+
+The period after `END-EVALUATE` terminates the COBOL sentence.
+
+---
+
+# 🧪 10. Day 04 Practice Program
+
+Create:
+
+```text
+DAY04/
+└── GRADE.cob
+```
+
+Use:
+
+```cobol
+IDENTIFICATION DIVISION.
+PROGRAM-ID. GRADE.
+
+DATA DIVISION.
+WORKING-STORAGE SECTION.
+
+01 MARKS PIC 999.
+
+PROCEDURE DIVISION.
+
+    MOVE 76 TO MARKS.
+
+    EVALUATE TRUE
+
+        WHEN MARKS >= 90
+            DISPLAY "GRADE A"
+
+        WHEN MARKS >= 80
+            DISPLAY "GRADE B"
+
+        WHEN MARKS >= 70
+            DISPLAY "GRADE C"
+
+        WHEN MARKS >= 60
+            DISPLAY "GRADE D"
+
+        WHEN OTHER
+            DISPLAY "FAIL"
+
+    END-EVALUATE.
+
+    STOP RUN.
+```
+
+Expected output:
+
+```text
+GRADE C
+```
+
+---
+
+## 🎯 Day 04 — What I should remember
+
+```text
+EVALUATE variable
+        ↓
+Compare one value against multiple cases
+
+EVALUATE TRUE
+        ↓
+Check multiple conditions
+
+WHEN
+        ↓
+A possible matching case
+
+WHEN OTHER
+        ↓
+No previous case matched
+
+END-EVALUATE
+        ↓
+Closes EVALUATE
+
+Order matters
+        ↓
+The first matching WHEN is selected
+```
+
+### Key syntax to remember
+
+```cobol
+EVALUATE VARIABLE
+    WHEN VALUE-1
+        statements
+    WHEN VALUE-2
+        statements
+    WHEN OTHER
+        statements
+END-EVALUATE.
+```
+
+and:
+
+```cobol
+EVALUATE TRUE
+    WHEN condition-1
+        statements
+    WHEN condition-2
+        statements
+    WHEN OTHER
+        statements
+END-EVALUATE.
+```
+
+**Day 04 concept = `EVALUATE` + `WHEN` + `WHEN OTHER` + `END-EVALUATE`.**
