@@ -1378,3 +1378,562 @@ END-EVALUATE.
 ```
 
 **Day 04 concept = `EVALUATE` + `WHEN` + `WHEN OTHER` + `END-EVALUATE`.**
+# 🟦 COBOL — DAY 05
+
+## `PERFORM` — Loops & Repetition
+
+In Day 05, we learn how to **repeat a block of COBOL statements** using `PERFORM`.
+
+If you know Python, think of `PERFORM` as COBOL's way of implementing repetition/loops.
+
+---
+
+# 1️⃣ What is `PERFORM`?
+
+`PERFORM` is used to execute a statement or block of statements repeatedly.
+
+For example:
+
+```cobol
+PERFORM 5 TIMES
+    DISPLAY "HELLO"
+END-PERFORM.
+```
+
+Output:
+
+```text
+HELLO
+HELLO
+HELLO
+HELLO
+HELLO
+```
+
+The block between:
+
+```cobol
+PERFORM
+```
+
+and:
+
+```cobol
+END-PERFORM
+```
+
+is executed repeatedly.
+
+---
+
+# 2️⃣ `PERFORM n TIMES`
+
+Use this when you know exactly how many times something should repeat.
+
+```cobol
+PERFORM 5 TIMES
+    DISPLAY "HELLO"
+END-PERFORM.
+```
+
+This means:
+
+> Execute the block exactly 5 times.
+
+### Python equivalent
+
+```python
+for i in range(5):
+    print("HELLO")
+```
+
+---
+
+# 3️⃣ Full example
+
+```cobol
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. LOOP01.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+
+       PROCEDURE DIVISION.
+
+           PERFORM 5 TIMES
+               DISPLAY "HELLO"
+           END-PERFORM.
+
+           STOP RUN.
+```
+
+Output:
+
+```text
+HELLO
+HELLO
+HELLO
+HELLO
+HELLO
+```
+
+---
+
+# 4️⃣ Using a variable with `PERFORM`
+
+The number of repetitions can also come from a variable.
+
+```cobol
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. LOOP02.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+
+       01 COUNT PIC 9.
+
+       PROCEDURE DIVISION.
+
+           MOVE 5 TO COUNT.
+
+           PERFORM COUNT TIMES
+               DISPLAY "HELLO"
+           END-PERFORM.
+
+           STOP RUN.
+```
+
+Here:
+
+```cobol
+MOVE 5 TO COUNT.
+```
+
+means:
+
+```text
+COUNT = 5
+```
+
+Then:
+
+```cobol
+PERFORM COUNT TIMES
+```
+
+means:
+
+> Repeat the block `COUNT` times.
+
+Therefore, the block executes 5 times.
+
+---
+
+# 5️⃣ Changing a variable inside a loop
+
+We can modify a variable during each iteration.
+
+Example:
+
+```cobol
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. LOOP03.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+
+       01 NUM PIC 9.
+
+       PROCEDURE DIVISION.
+
+           MOVE 1 TO NUM.
+
+           PERFORM 5 TIMES
+               DISPLAY NUM
+               ADD 1 TO NUM
+           END-PERFORM.
+
+           STOP RUN.
+```
+
+Output:
+
+```text
+1
+2
+3
+4
+5
+```
+
+### How it works
+
+Initially:
+
+```text
+NUM = 1
+```
+
+First iteration:
+
+```text
+DISPLAY NUM  → 1
+ADD 1 TO NUM → NUM becomes 2
+```
+
+Second:
+
+```text
+DISPLAY NUM  → 2
+ADD 1 TO NUM → NUM becomes 3
+```
+
+And so on.
+
+---
+
+# 6️⃣ `ADD 1 TO`
+
+We introduced another COBOL statement:
+
+```cobol
+ADD 1 TO NUM
+```
+
+It increases `NUM` by 1.
+
+Conceptually:
+
+```text
+NUM = NUM + 1
+```
+
+### Python equivalent
+
+```python
+num += 1
+```
+
+So:
+
+```cobol
+ADD 1 TO NUM
+```
+
+is commonly used for incrementing a numeric data item.
+
+---
+
+# 7️⃣ `PERFORM UNTIL`
+
+Sometimes we don't know the exact number of repetitions.
+
+Instead, we want to continue until a condition becomes true.
+
+Syntax:
+
+```cobol
+PERFORM UNTIL condition
+    statements
+END-PERFORM.
+```
+
+Example:
+
+```cobol
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. LOOP04.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+
+       01 NUM PIC 99.
+
+       PROCEDURE DIVISION.
+
+           MOVE 1 TO NUM.
+
+           PERFORM UNTIL NUM > 10
+               DISPLAY NUM
+               ADD 1 TO NUM
+           END-PERFORM.
+
+           STOP RUN.
+```
+
+Output:
+
+```text
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+```
+
+---
+
+# 🧠 8️⃣ Understanding `UNTIL`
+
+This:
+
+```cobol
+PERFORM UNTIL NUM > 10
+```
+
+means:
+
+> Keep repeating until `NUM > 10` becomes TRUE.
+
+Starting with:
+
+```text
+NUM = 1
+```
+
+the loop works conceptually like:
+
+```text
+NUM = 1  → 1 > 10? FALSE → continue
+NUM = 2  → 2 > 10? FALSE → continue
+NUM = 3  → 3 > 10? FALSE → continue
+...
+NUM = 10 → 10 > 10? FALSE → continue
+NUM = 11 → 11 > 10? TRUE → stop
+```
+
+Therefore, `11` is not displayed.
+
+---
+
+# 9️⃣ Python connection
+
+COBOL:
+
+```cobol
+PERFORM UNTIL NUM > 10
+    DISPLAY NUM
+    ADD 1 TO NUM
+END-PERFORM.
+```
+
+Conceptually similar to Python:
+
+```python
+while num <= 10:
+    print(num)
+    num += 1
+```
+
+The logic is the same, but the COBOL syntax is different.
+
+---
+
+# 🔟 `PERFORM TIMES` vs `PERFORM UNTIL`
+
+### `PERFORM TIMES`
+
+Use when you know the number of repetitions:
+
+```cobol
+PERFORM 5 TIMES
+    DISPLAY "HELLO"
+END-PERFORM.
+```
+
+Think:
+
+> **Do this exactly 5 times.**
+
+---
+
+### `PERFORM UNTIL`
+
+Use when repetition depends on a condition:
+
+```cobol
+PERFORM UNTIL NUM > 10
+    DISPLAY NUM
+    ADD 1 TO NUM
+END-PERFORM.
+```
+
+Think:
+
+> **Keep doing this until the condition becomes TRUE.**
+
+---
+
+# 1️⃣1️⃣ `END-PERFORM`
+
+Just as:
+
+```cobol
+END-IF
+```
+
+closes an `IF` block,
+
+```cobol
+END-PERFORM
+```
+
+closes a `PERFORM` block.
+
+Example:
+
+```cobol
+PERFORM 5 TIMES
+    DISPLAY "HELLO"
+END-PERFORM.
+```
+
+The period after `END-PERFORM` terminates the COBOL sentence.
+
+---
+
+# 🧠 Day 05 Key Concepts
+
+```text
+PERFORM
+   ↓
+Repeat/execute a block of statements
+
+PERFORM n TIMES
+   ↓
+Repeat a fixed number of times
+
+PERFORM UNTIL condition
+   ↓
+Repeat until the condition becomes TRUE
+
+ADD 1 TO NUM
+   ↓
+Increase NUM by 1
+
+END-PERFORM
+   ↓
+Closes the PERFORM block
+```
+
+---
+
+# 🐍 Python → COBOL Mapping
+
+| Python                    | COBOL                                   |
+| ------------------------- | --------------------------------------- |
+| `for` loop                | `PERFORM ... TIMES` / `PERFORM VARYING` |
+| `while` loop              | `PERFORM UNTIL`                         |
+| `print()`                 | `DISPLAY`                               |
+| `num += 1`                | `ADD 1 TO NUM`                          |
+| Indentation defines block | `END-PERFORM` explicitly closes block   |
+
+---
+
+# 🧪 Day 05 Practice
+
+Create:
+
+```text
+DAY05/
+└── LOOP.cob
+```
+
+Use:
+
+```cobol
+01 NUM PIC 99.
+```
+
+Start with:
+
+```cobol
+MOVE 1 TO NUM.
+```
+
+Your program should produce:
+
+```text
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+```
+
+Use:
+
+```cobol
+PERFORM UNTIL
+```
+
+Inside the loop:
+
+1. `DISPLAY NUM`
+2. Increase `NUM` by 1 using `ADD`
+
+The core logic should be:
+
+```cobol
+PERFORM UNTIL __________
+    DISPLAY NUM
+    __________
+END-PERFORM.
+```
+
+### Expected result
+
+```text
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+```
+
+---
+
+# 🎯 Day 05 Summary
+
+The main thing to remember:
+
+```cobol
+PERFORM 5 TIMES
+    ...
+END-PERFORM.
+```
+
+→ **Fixed repetition**
+
+```cobol
+PERFORM UNTIL CONDITION
+    ...
+END-PERFORM.
+```
+
+→ **Condition-based repetition**
+
+And:
+
+```cobol
+ADD 1 TO NUM
+```
+
+→ **Increment the variable**
+
+**Day 05 = `PERFORM` + loops + `PERFORM TIMES` + `PERFORM UNTIL` + `ADD`.**
