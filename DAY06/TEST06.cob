@@ -1,0 +1,16 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TEST06.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+
+       01 NUM PIC 99.
+
+       PROCEDURE DIVISION.
+
+           PERFORM VARYING NUM FROM 1 BY 1 UNTIL NUM > 10
+               DISPLAY NUM
+           END-PERFORM.
+
+           STOP RUN.
+           

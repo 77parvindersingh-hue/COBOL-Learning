@@ -1,0 +1,17 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. LOOP06.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+
+       01 NUM PIC 99.
+
+       PROCEDURE DIVISION.
+
+           PERFORM VARYING NUM FROM 5 BY 5 UNTIL NUM > 30
+               DISPLAY NUM
+           END-PERFORM.
+
+           STOP RUN.
+
+           

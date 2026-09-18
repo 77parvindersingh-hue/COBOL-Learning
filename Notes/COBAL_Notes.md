@@ -1937,3 +1937,612 @@ ADD 1 TO NUM
 → **Increment the variable**
 
 **Day 05 = `PERFORM` + loops + `PERFORM TIMES` + `PERFORM UNTIL` + `ADD`.**
+# 🟦 COBOL — DAY 06
+
+## `PERFORM VARYING` — COBOL's Counting Loop
+
+In Day 05, we learned:
+
+```cobol
+PERFORM 5 TIMES
+    ...
+END-PERFORM.
+```
+
+and:
+
+```cobol
+PERFORM UNTIL CONDITION
+    ...
+END-PERFORM.
+```
+
+Today we learn:
+
+```cobol
+PERFORM VARYING
+```
+
+This is especially useful when we want a variable to **start at a value, change by a fixed amount, and stop at a condition**.
+
+If you know Python, this is conceptually similar to a `for` loop.
+
+---
+
+# 1️⃣ Basic Syntax
+
+The general structure is:
+
+```cobol
+PERFORM VARYING variable FROM starting-value
+    BY increment
+    UNTIL condition
+
+    statements
+
+END-PERFORM.
+```
+
+For example:
+
+```cobol
+PERFORM VARYING NUM FROM 1 BY 1 UNTIL NUM > 10
+    DISPLAY NUM
+END-PERFORM.
+```
+
+Output:
+
+```text
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+```
+
+---
+
+# 2️⃣ Understanding `VARYING`
+
+Look at:
+
+```cobol
+PERFORM VARYING NUM FROM 1 BY 1 UNTIL NUM > 10
+```
+
+There are three important parts:
+
+### `FROM`
+
+```cobol
+FROM 1
+```
+
+Where the variable starts.
+
+```text
+NUM = 1
+```
+
+### `BY`
+
+```cobol
+BY 1
+```
+
+How much the variable changes after each iteration.
+
+```text
+NUM = NUM + 1
+```
+
+### `UNTIL`
+
+```cobol
+UNTIL NUM > 10
+```
+
+The condition that determines when the loop stops.
+
+---
+
+# 3️⃣ Full Example
+
+```cobol
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. LOOP06.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+
+       01 NUM PIC 99.
+
+       PROCEDURE DIVISION.
+
+           PERFORM VARYING NUM FROM 1 BY 1 UNTIL NUM > 10
+               DISPLAY NUM
+           END-PERFORM.
+
+           STOP RUN.
+```
+
+Output:
+
+```text
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+```
+
+---
+
+# 4️⃣ What Happens Internally?
+
+Think of:
+
+```cobol
+PERFORM VARYING NUM FROM 1 BY 1 UNTIL NUM > 10
+```
+
+as:
+
+```text
+Start NUM at 1
+       ↓
+Display NUM
+       ↓
+Increase NUM by 1
+       ↓
+Check stopping condition
+       ↓
+Repeat
+```
+
+So:
+
+```text
+NUM = 1 → DISPLAY
+NUM = 2 → DISPLAY
+NUM = 3 → DISPLAY
+...
+NUM = 10 → DISPLAY
+NUM = 11 → condition is TRUE → STOP
+```
+
+Therefore, `11` isn't displayed.
+
+---
+
+# 5️⃣ Python Comparison 🐍
+
+Python:
+
+```python
+for num in range(1, 11):
+    print(num)
+```
+
+COBOL:
+
+```cobol
+PERFORM VARYING NUM FROM 1 BY 1 UNTIL NUM > 10
+    DISPLAY NUM
+END-PERFORM.
+```
+
+The syntax is different, but the basic concept is very similar.
+
+---
+
+# 6️⃣ Changing the Increment
+
+`BY` doesn't have to be `1`.
+
+For example:
+
+```cobol
+PERFORM VARYING NUM FROM 2 BY 2 UNTIL NUM > 10
+    DISPLAY NUM
+END-PERFORM.
+```
+
+Output:
+
+```text
+2
+4
+6
+8
+10
+```
+
+Here:
+
+```text
+FROM 2
+BY 2
+```
+
+means:
+
+```text
+2 → 4 → 6 → 8 → 10 → 12
+```
+
+At `12`:
+
+```text
+NUM > 10
+```
+
+becomes TRUE, so the loop stops.
+
+### Python equivalent
+
+```python
+for num in range(2, 11, 2):
+    print(num)
+```
+
+---
+
+# 7️⃣ Counting Backwards
+
+We can also use a negative value with `BY`.
+
+```cobol
+PERFORM VARYING NUM FROM 10 BY -1 UNTIL NUM < 1
+    DISPLAY NUM
+END-PERFORM.
+```
+
+Output:
+
+```text
+10
+9
+8
+7
+6
+5
+4
+3
+2
+1
+```
+
+Conceptually:
+
+```text
+10 → 9 → 8 → 7 → ... → 1 → 0
+```
+
+At `0`:
+
+```text
+NUM < 1
+```
+
+is TRUE, so the loop stops.
+
+---
+
+# 8️⃣ `PERFORM UNTIL` vs `PERFORM VARYING`
+
+### Day 05 — `PERFORM UNTIL`
+
+```cobol
+MOVE 1 TO NUM.
+
+PERFORM UNTIL NUM > 10
+    DISPLAY NUM
+    ADD 1 TO NUM
+END-PERFORM.
+```
+
+We manually change `NUM`:
+
+```cobol
+ADD 1 TO NUM
+```
+
+---
+
+### Day 06 — `PERFORM VARYING`
+
+```cobol
+PERFORM VARYING NUM FROM 1 BY 1 UNTIL NUM > 10
+    DISPLAY NUM
+END-PERFORM.
+```
+
+The loop itself handles the changing value.
+
+So you don't need:
+
+```cobol
+ADD 1 TO NUM
+```
+
+inside the loop.
+
+---
+
+# 🧠 9️⃣ The Three Keywords to Remember
+
+```cobol
+FROM
+```
+
+→ Starting value
+
+```cobol
+BY
+```
+
+→ Increment/decrement
+
+```cobol
+UNTIL
+```
+
+→ Stopping condition
+
+Together:
+
+```cobol
+PERFORM VARYING NUM FROM 1 BY 1 UNTIL NUM > 10
+```
+
+means:
+
+> Start `NUM` at 1, change it by 1 each iteration, and stop when `NUM > 10`.
+
+---
+
+# 🔟 Your Day 06 Program
+
+Your actual Day 06 exercise was to print:
+
+```text
+5
+10
+15
+20
+25
+30
+```
+
+Use:
+
+```cobol
+01 NUM PIC 99.
+```
+
+and:
+
+```cobol
+PERFORM VARYING
+```
+
+The complete program is:
+
+```cobol
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. LOOP06.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+
+       01 NUM PIC 99.
+
+       PROCEDURE DIVISION.
+
+           PERFORM VARYING NUM FROM 5 BY 5 UNTIL NUM > 30
+               DISPLAY NUM
+           END-PERFORM.
+
+           STOP RUN.
+```
+
+Output:
+
+```text
+5
+10
+15
+20
+25
+30
+```
+
+---
+
+# 🧠 1️⃣1️⃣ Breaking Down Our Exercise
+
+```cobol
+PERFORM VARYING NUM FROM 5 BY 5 UNTIL NUM > 30
+```
+
+### Start:
+
+```text
+NUM = 5
+```
+
+### Then increase by 5:
+
+```text
+5
+10
+15
+20
+25
+30
+35
+```
+
+### Stop when:
+
+```text
+NUM > 30
+```
+
+At `35`:
+
+```text
+35 > 30 → TRUE
+```
+
+so the loop stops.
+
+---
+
+# 🆚 Python → COBOL
+
+| Python         | COBOL                           |
+| -------------- | ------------------------------- |
+| `for`          | `PERFORM VARYING`               |
+| `range(1, 11)` | `FROM 1 ... UNTIL NUM > 10`     |
+| Starting value | `FROM`                          |
+| Step value     | `BY`                            |
+| Stop condition | `UNTIL`                         |
+| `print()`      | `DISPLAY`                       |
+| `i += 1`       | Automatically handled by `BY 1` |
+
+---
+
+# ⚠️ 1️⃣2️⃣ `END-PERFORM`
+
+Just like we learned:
+
+```cobol
+IF condition
+    ...
+END-IF.
+```
+
+For a `PERFORM` block:
+
+```cobol
+PERFORM VARYING ...
+    ...
+END-PERFORM.
+```
+
+`END-PERFORM` tells COBOL where the loop ends.
+
+---
+
+# 🧪 DAY 06 — PRACTICE
+
+Try these yourself.
+
+### Task 1
+
+Print:
+
+```text
+1
+2
+3
+4
+5
+```
+
+using:
+
+```cobol
+PERFORM VARYING
+```
+
+---
+
+### Task 2
+
+Print:
+
+```text
+10
+20
+30
+40
+50
+```
+
+Hint:
+
+```text
+FROM = ?
+BY = ?
+UNTIL = ?
+```
+
+---
+
+### Task 3 🔥
+
+Print backwards:
+
+```text
+10
+9
+8
+7
+6
+5
+4
+3
+2
+1
+```
+
+Use a negative `BY`.
+
+---
+
+# 🎯 DAY 06 SUMMARY
+
+The main pattern to remember is:
+
+```cobol
+PERFORM VARYING variable
+    FROM starting-value
+    BY increment
+    UNTIL condition
+
+    statements
+
+END-PERFORM.
+```
+
+For example:
+
+```cobol
+PERFORM VARYING NUM FROM 5 BY 5 UNTIL NUM > 30
+    DISPLAY NUM
+END-PERFORM.
+```
+
+### Remember:
+
+```text
+FROM → where to start
+BY   → how much to change
+UNTIL → when to stop
+```
+
+🔥 **Day 06 = `PERFORM VARYING` + `FROM` + `BY` + `UNTIL`.**
